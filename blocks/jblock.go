@@ -13,6 +13,8 @@ type JBlock struct {
 	rotationState int
 	colors        []rl.Color
 	cells         map[int][]position.Position
+	rowOffset     int
+	colOffset     int
 }
 
 func NewJBlock() *JBlock {
@@ -44,13 +46,19 @@ func NewJBlock() *JBlock {
 		{Row: 2, Col: 1},
 	}
 
-	return &JBlock{
+	b := &JBlock{
 		cellSize:      30,
 		Id:            2,
 		colors:        c.GetAllColors(),
 		cells:         cell,
 		rotationState: 0,
+		rowOffset:     0,
+		colOffset:     0,
 	}
+
+	b.Move(0, 3)
+
+	return b
 }
 
 func (b *JBlock) Draw() {
@@ -73,12 +81,17 @@ func (b *JBlock) GetCellPositions() []position.Position {
 
 	for _, pos := range tiles {
 		newPosition := position.Position{
-			Row: pos.Row,
-			Col: pos.Col,
+			Row: pos.Row + b.rowOffset,
+			Col: pos.Col + b.colOffset,
 		}
 
 		movedTiles = append(movedTiles, newPosition)
 	}
 
 	return movedTiles
+}
+
+func (b *JBlock) Move(rows int, cols int) {
+	b.rowOffset += rows
+	b.colOffset += cols
 }

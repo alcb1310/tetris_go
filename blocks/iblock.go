@@ -11,6 +11,8 @@ type IBlock struct {
 	Id            int
 	cellSize      int
 	rotationState int
+	rowOffset     int
+	colOffset     int
 	colors        []rl.Color
 	cells         map[int][]position.Position
 }
@@ -44,13 +46,19 @@ func NewIBlock() *IBlock {
 		{Row: 3, Col: 1},
 	}
 
-	return &IBlock{
+	b := &IBlock{
 		cellSize:      30,
 		Id:            3,
 		colors:        c.GetAllColors(),
 		cells:         cell,
 		rotationState: 0,
+		rowOffset:     0,
+		colOffset:     0,
 	}
+
+	b.Move(-1, 3)
+
+	return b
 }
 
 func (b *IBlock) Draw() {
@@ -73,12 +81,17 @@ func (b *IBlock) GetCellPositions() []position.Position {
 
 	for _, pos := range tiles {
 		newPosition := position.Position{
-			Row: pos.Row,
-			Col: pos.Col,
+			Row: pos.Row + b.rowOffset,
+			Col: pos.Col + b.colOffset,
 		}
 
 		movedTiles = append(movedTiles, newPosition)
 	}
 
 	return movedTiles
+}
+
+func (b *IBlock) Move(rows int, cols int) {
+	b.rowOffset += rows
+	b.colOffset += cols
 }

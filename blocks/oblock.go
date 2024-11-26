@@ -13,6 +13,8 @@ type OBlock struct {
 	rotationState int
 	colors        []rl.Color
 	cells         map[int][]position.Position
+	rowOffset     int
+	colOffset     int
 }
 
 func NewOBlock() *OBlock {
@@ -26,13 +28,19 @@ func NewOBlock() *OBlock {
 		{Row: 1, Col: 1},
 	}
 
-	return &OBlock{
+	b := &OBlock{
 		cellSize:      30,
 		Id:            4,
 		colors:        c.GetAllColors(),
 		cells:         cell,
 		rotationState: 0,
+		rowOffset:     0,
+		colOffset:     0,
 	}
+
+	b.Move(0, 4)
+
+	return b
 }
 
 func (b *OBlock) Draw() {
@@ -51,16 +59,22 @@ func (b *OBlock) Draw() {
 
 func (b *OBlock) GetCellPositions() []position.Position {
 	tiles := b.cells[b.rotationState]
+
 	movedTiles := make([]position.Position, 0)
 
 	for _, pos := range tiles {
 		newPosition := position.Position{
-			Row: pos.Row,
-			Col: pos.Col,
+			Row: pos.Row + b.rowOffset,
+			Col: pos.Col + b.colOffset,
 		}
 
 		movedTiles = append(movedTiles, newPosition)
 	}
 
 	return movedTiles
+}
+
+func (b *OBlock) Move(rows int, cols int) {
+	b.rowOffset += rows
+	b.colOffset += cols
 }

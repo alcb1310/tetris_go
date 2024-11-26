@@ -13,6 +13,8 @@ type LBlock struct {
 	rotationState int
 	colors        []rl.Color
 	cells         map[int][]position.Position
+	rowOffset     int
+	colOffset     int
 }
 
 func NewLBlock() *LBlock {
@@ -44,13 +46,19 @@ func NewLBlock() *LBlock {
 		{Row: 2, Col: 1},
 	}
 
-	return &LBlock{
+	b := &LBlock{
 		cellSize:      30,
 		Id:            1,
 		colors:        c.GetAllColors(),
 		cells:         cell,
 		rotationState: 0,
+		rowOffset:     0,
+		colOffset:     0,
 	}
+
+	b.Move(0, 3)
+
+	return b
 }
 
 func (b *LBlock) Draw() {
@@ -73,12 +81,17 @@ func (b *LBlock) GetCellPositions() []position.Position {
 
 	for _, pos := range tiles {
 		newPosition := position.Position{
-			Row: pos.Row,
-			Col: pos.Col,
+			Row: pos.Row + b.rowOffset,
+			Col: pos.Col + b.colOffset,
 		}
 
 		movedTiles = append(movedTiles, newPosition)
 	}
 
 	return movedTiles
+}
+
+func (b *LBlock) Move(rows int, cols int) {
+	b.rowOffset += rows
+	b.colOffset += cols
 }

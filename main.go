@@ -11,9 +11,9 @@ func main() {
 	defer rl.CloseWindow()
 
 	rl.SetTargetFPS(constants.FPS)
-  g := game.NewGame()
+	g := game.NewGame()
 
 	for !rl.WindowShouldClose() {
-    g.Run()
+		g.Run()
 	}
 }
