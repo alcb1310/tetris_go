@@ -12,6 +12,7 @@ type Grid interface {
 	Initialize()
 	Print()
 	Draw()
+	IsCellOutside(row int, col int) bool
 }
 
 type grid struct {
@@ -68,4 +69,8 @@ func (g *grid) Draw() {
 			)
 		}
 	}
+}
+
+func (g *grid) IsCellOutside(row int, col int) bool {
+	return row < 0 || row >= g.numRows || col < 0 || col >= g.numCols
 }

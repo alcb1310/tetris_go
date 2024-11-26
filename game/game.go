@@ -11,13 +11,17 @@ import (
 type Game interface {
 	Run()
 	draw()
+	handleInput()
+	moveBlockLeft()
+	moveBlockRight()
+	moveBlockDown()
 }
 
 type game struct {
 	lastUpdateTime float64
 	gameOver       bool
 	grid           gr.Grid
-	block          blocks.Block
+	currentBlock   blocks.Block
 }
 
 func NewGame() Game {
@@ -25,11 +29,13 @@ func NewGame() Game {
 		lastUpdateTime: 0,
 		gameOver:       false,
 		grid:           gr.NewGrid(),
-		block:          blocks.NewZBlock(),
+		currentBlock:   blocks.NewZBlock(),
 	}
 }
 
 func (g *game) Run() {
+	g.handleInput()
+
 	rl.BeginDrawing()
 	rl.ClearBackground(constants.NEARLY_BLACK)
 
@@ -40,5 +46,51 @@ func (g *game) Run() {
 
 func (g *game) draw() {
 	g.grid.Draw()
-	g.block.Draw()
+	g.currentBlock.Draw()
+}
+
+func (g *game) handleInput() {
+	key := rl.GetKeyPressed()
+
+	switch key {
+	case rl.KeyLeft:
+		g.moveBlockLeft()
+	case rl.KeyRight:
+		g.moveBlockRight()
+	case rl.KeyDown:
+		g.moveBlockDown()
+	}
+}
+
+func (g *game) moveBlockLeft() {
+	g.currentBlock.Move(0, -1)
+  if g.isBlockOutside() {
+    g.currentBlock.Move(0, 1)
+  }
+}
+
+func (g *game) moveBlockRight() {
+	g.currentBlock.Move(0, 1)
+  if g.isBlockOutside() {
+    g.currentBlock.Move(0, -1)
+  }
+}
+
+func (g *game) moveBlockDown() {
+	g.currentBlock.Move(1, 0)
+  if g.isBlockOutside() {
+    g.currentBlock.Move(-1, 0)
+  }
+}
+
+func (g *game) isBlockOutside() bool {
+  tiles := g.currentBlock.GetCellPositions()
+
+  for _, tile := range tiles {
+    if g.grid.IsCellOutside(tile.Row, tile.Col) {
+      return true
+    }
+  }
+
+  return false
 }
