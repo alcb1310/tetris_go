@@ -78,3 +78,15 @@ func (b *OBlock) Move(rows int, cols int) {
 	b.rowOffset += rows
 	b.colOffset += cols
 }
+
+func (b *OBlock) Rotate() {
+  b.rotationState = (b.rotationState + 1) % len(b.cells)
+}
+
+func (b *OBlock) UndoRotate() {
+	b.rotationState--
+
+	if b.rotationState < 0 {
+		b.rotationState = len(b.cells) - 1
+	}
+}

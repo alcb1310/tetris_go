@@ -6,4 +6,6 @@ type Block interface {
 	Draw()
 	GetCellPositions() []position.Position
 	Move(rows int, cols int)
+	Rotate()
+	UndoRotate()
 }

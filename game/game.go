@@ -59,38 +59,48 @@ func (g *game) handleInput() {
 		g.moveBlockRight()
 	case rl.KeyDown:
 		g.moveBlockDown()
+	case rl.KeyUp:
+		g.rotateBlock()
 	}
 }
 
 func (g *game) moveBlockLeft() {
 	g.currentBlock.Move(0, -1)
-  if g.isBlockOutside() {
-    g.currentBlock.Move(0, 1)
-  }
+	if g.isBlockOutside() {
+		g.currentBlock.Move(0, 1)
+	}
 }
 
 func (g *game) moveBlockRight() {
 	g.currentBlock.Move(0, 1)
-  if g.isBlockOutside() {
-    g.currentBlock.Move(0, -1)
-  }
+	if g.isBlockOutside() {
+		g.currentBlock.Move(0, -1)
+	}
 }
 
 func (g *game) moveBlockDown() {
 	g.currentBlock.Move(1, 0)
-  if g.isBlockOutside() {
-    g.currentBlock.Move(-1, 0)
-  }
+	if g.isBlockOutside() {
+		g.currentBlock.Move(-1, 0)
+	}
 }
 
 func (g *game) isBlockOutside() bool {
-  tiles := g.currentBlock.GetCellPositions()
+	tiles := g.currentBlock.GetCellPositions()
 
-  for _, tile := range tiles {
-    if g.grid.IsCellOutside(tile.Row, tile.Col) {
-      return true
-    }
+	for _, tile := range tiles {
+		if g.grid.IsCellOutside(tile.Row, tile.Col) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (g *game) rotateBlock() {
+	g.currentBlock.Rotate()
+
+  if g.isBlockOutside() {
+    g.currentBlock.UndoRotate()
   }
-
-  return false
 }
